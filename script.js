@@ -1,126 +1,105 @@
 // Book Class
-class Book {
-  constructor(title, author, isbn) {
-    this.title = title;
-    this.author = author;
-    this.isbn = isbn;
-  }
-}
-
+var Book = /** @class */ (function () {
+    function Book(title, author, isbn) {
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
+        // this.title = title;
+        // this.author = author;
+        // this.isbn = isbn;
+    }
+    return Book;
+}());
 // UI Class
-class UI {
-  static displayBooks() {
-    const books = Store.getBooks();
-
-    books.forEach(book => UI.addBookToList(book));
-  }
-
-  static addBookToList(book) {
-    const list = document.querySelector("#book-list");
-
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${book.title}</td>
-      <td>${book.author}</td>
-      <td>${book.isbn}</td>
-      <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td>
-    `;
-
-    list.appendChild(row);
-  }
-
-  static clearFields() {
-    document.querySelector("#title").value = "";
-    document.querySelector("#author").value = "";
-    document.querySelector("#isbn").value = "";
-  }
-
-  static showAlert(message, className) {
-    const div = document.createElement("div");
-    div.className = `alert alert-${className}`;
-    div.appendChild(document.createTextNode(message));
-    const container = document.querySelector(".container");
-    const form = document.querySelector("#book-form");
-    container.insertBefore(div, form);
-
-    // Vanish in 3 seconds
-    setTimeout(() => document.querySelector(".alert").remove(), 3000);
-  }
-
-  static deleteBook(el) {
-    if (el.classList.contains("delete")) {
-      el.parentElement.parentElement.remove();
+var UI = /** @class */ (function () {
+    function UI() {
     }
-  }
-}
-
+    UI.displayBooks = function () {
+        var books = Store.getBooks();
+        books.forEach(function (book) { return UI.addBookToList(book); });
+    };
+    UI.addBookToList = function (book) {
+        var list = document.querySelector("#book-list");
+        var row = document.createElement("tr");
+        row.innerHTML = "\n      <td>" + book.title + "</td>\n      <td>" + book.author + "</td>\n      <td>" + book.isbn + "</td>\n      <td><a href=\"#\" class=\"btn btn-danger btn-sm delete\">X</a></td>\n    ";
+        list.appendChild(row);
+    };
+    UI.clearFields = function () {
+        document.querySelector("#title").value = "";
+        document.querySelector("#author").value = "";
+        document.querySelector("#isbn").value = "";
+    };
+    UI.showAlert = function (message, className) {
+        var div = document.createElement("div");
+        div.className = "alert alert-" + className;
+        div.appendChild(document.createTextNode(message));
+        var container = document.querySelector(".container");
+        var form = document.querySelector("#book-form");
+        container.insertBefore(div, form);
+        // Vanish in 3 seconds
+        setTimeout(function () { return document.querySelector(".alert").remove(); }, 3000);
+    };
+    UI.deleteBook = function (el) {
+        if (el.classList.contains("delete")) {
+            el.parentElement.parentElement.remove();
+        }
+    };
+    return UI;
+}());
 // Store Class
-
-class Store {
-  static getBooks() {
-    let books;
-    if (localStorage.getItem("books") === null) {
-      books = [];
-    } else {
-      books = JSON.parse(localStorage.getItem("books"));
+var Store = /** @class */ (function () {
+    function Store() {
     }
-
-    return books;
-  }
-
-  static addBook(book) {
-    const books = Store.getBooks();
-    books.push(book);
-    localStorage.setItem("books", JSON.stringify(books));
-  }
-
-  static removeBook(isbn) {
-    const books = Store.getBooks();
-
-    books.forEach((book, index) => {
-      if (book.isbn === isbn) {
-        books.splice(index, 1);
-      }
-    });
-
-    localStorage.setItem("books", JSON.stringify(books));
-  }
-}
-
+    Store.getBooks = function () {
+        var books;
+        if (localStorage.getItem("books") === null) {
+            books = [];
+        }
+        else {
+            books = JSON.parse(localStorage.getItem("books"));
+        }
+        return books;
+    };
+    Store.addBook = function (book) {
+        var books = Store.getBooks();
+        books.push(book);
+        localStorage.setItem("books", JSON.stringify(books));
+    };
+    Store.removeBook = function (isbn) {
+        var books = Store.getBooks();
+        books.forEach(function (book, index) {
+            if (book.isbn === isbn) {
+                books.splice(index, 1);
+            }
+        });
+        localStorage.setItem("books", JSON.stringify(books));
+    };
+    return Store;
+}());
 // Event: Display Books
 document.addEventListener("DOMContentLoaded", UI.displayBooks);
-
 // Event: Add a Book
-document.querySelector("#book-form").addEventListener("submit", e => {
-  e.preventDefault();
-
-  const title = document.querySelector("#title").value;
-  const author = document.querySelector("#author").value;
-  const isbn = document.querySelector("#isbn").value;
-
-  // Validate Form
-  if (title === "" || author === "" || isbn === "") {
-    UI.showAlert("Please fill in all fields", "danger");
-  } else {
-    const book = new Book(title, author, isbn);
-
-    UI.addBookToList(book);
-
-    Store.addBook(book);
-
-    UI.showAlert("Book Added", "success");
-
-    UI.clearFields();
-  }
+document.querySelector("#book-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var title = document.querySelector("#title").value;
+    var author = document.querySelector("#author").value;
+    var isbn = document.querySelector("#title").value;
+    // Validate Form
+    if (title === "" || author === "" || isbn === "") {
+        UI.showAlert("Please fill in all fields", "danger");
+    }
+    else {
+        var book = new Book(title, author, isbn);
+        UI.addBookToList(book);
+        Store.addBook(book);
+        UI.showAlert("Book Added", "success");
+        UI.clearFields();
+    }
 });
-
 // Event: Remove a Book
-
-document.querySelector("#book-list").addEventListener("click", e => {
-  UI.deleteBook(e.target);
-
-  Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
-
-  UI.showAlert("Book Removed", "success");
+document.querySelector("#book-list").addEventListener("click", function (e) {
+    UI.deleteBook(e.target);
+    Store.removeBook(e.target.parentElement.previousElementSibling
+        .textContent);
+    UI.showAlert("Book Removed", "success");
 });
